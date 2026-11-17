@@ -912,7 +912,7 @@ function renderTimer(st){
 
 /* ----- Boards ----- */
 function revealSeq(L){
-  if(L.type==='sort') return [5,4,3,2,1];
+  if(L.type==='sort') return [1,2,3,4,5];   // sort lists: first place first
   if(L.type==='finale') return finaleRanking(L.fq).map((x,k)=>k).reverse();
   if(L.type==='estimate') return [1];
   const seq = L.items.map(x=>x.rank).sort((a,b)=>b-a);
