@@ -322,6 +322,17 @@ button.cp{border:0;cursor:pointer;font-family:var(--font)}
 .rgroup{border:2px solid #E2E3E8;border-radius:24px;padding:12px 18px}
 .rname{font-weight:800;font-size:28px;margin:2px 0 6px 6px}
 
+/* ---------- Estimate round ---------- */
+.tile.answer{width:1100px;height:380px;margin:50px auto 0}
+.tile.answer .face{justify-content:center}
+.tile.answer .face.front .q{font-size:240px;font-weight:800;line-height:1}
+.ans{text-align:center;padding:0 40px}
+.ans-num{font-size:200px;font-weight:800;line-height:1;color:var(--green);letter-spacing:-.04em}
+.ans-unit{font-size:52px;color:var(--muted);font-weight:600;margin-top:8px}
+.est-note{text-align:center;font-size:32px;color:var(--muted);margin-top:40px}
+table.esttab input.estq{width:900px}
+table.esttab input.estu{width:180px}
+table.esttab input.esta{width:180px}
 @media (prefers-reduced-motion: reduce){
   *{animation:none !important;transition:none !important}
 }
@@ -363,7 +374,7 @@ function confirmClick(btn, ask, fn){
   btn._label = btn.textContent; btn.dataset.armed = '1'; btn.textContent = ask;
   btn._t = setTimeout(()=>{ delete btn.dataset.armed; btn.textContent = btn._label; }, 4000);
 }
-const PTS = Object.assign({hit:1, top:3, bomb:-1, sortPlace:1, finalePlace:1}, Q.points||{});
+const PTS = Object.assign({hit:1, top:3, bomb:-1, sortPlace:1, finalePlace:1, estimate:[5,4,3,2,1]}, Q.points||{});
 const ptsLabel = n => (n<0?'−':'')+Math.abs(n)+' '+(Math.abs(n)===1?'pt':'pts');
 const itemPts = (L, it) => (it.rank===1 ? PTS.top : PTS.hit) * (L.multiplier||1);
 
@@ -377,6 +388,7 @@ function defaults(){
     players: (Q.players||[]).map(n=>String(n).trim()).filter(Boolean).slice(0,MAX_P),
     scores: [], answers, history: {}, applied: {}, paste: {},
     finaleQs: FIN ? [FIN.questions[0].id] : [],
+    estQs: [],
     off, step: 0, revealed: 0
   };
 }
@@ -389,6 +401,10 @@ function syncArrays(){
   S.history = mapObj(S.history, h=>fit(h,0));
   S.applied = mapObj(S.applied, a=>fit(a,0));
   S.paste = S.paste || {};
+  const EST = ROUNDS.find(r=>r.type==='estimate');
+  const nEst = EST ? (EST.maxQuestions||3) : 0;
+  const oldQ = Array.isArray(S.estQs) ? S.estQs : [];
+  S.estQs = Array.from({length:nEst}, (_,i)=>Object.assign({id:'q'+(i+1), text:'', unit:'', answer:''}, oldQ[i]||{}, {id:'q'+(i+1)}));
   if(FIN){ S.finaleQs = (S.finaleQs||[]).filter(id=>FIN.questions.some(q=>q.id===id)); if(!S.finaleQs.length) S.finaleQs = [FIN.questions[0].id]; }
 }
 let S = defaults();
@@ -438,12 +454,21 @@ function finaleList(ri, q){
   LCACHE[key] = L;
   return L;
 }
+function estList(ri, q){
+  const key = 'est-'+q.id;
+  const r = ROUNDS[ri];
+  const howTo = q.unit ? [`Type one number, in ${q.unit}, in the Teams chat. Don't send yet.`].concat((r.howTo||[]).slice(1)) : r.howTo;
+  const L = Object.assign({}, r, {ri, key, est:q.id, topic:q.text, unit:q.unit, howTo, answer: parseNumber(q.answer)});
+  LCACHE[key] = L;
+  return L;
+}
 function roundLists(ri){
   const r = ROUNDS[ri];
+  if(r.type==='estimate') return (S.estQs||[]).filter(q=>String(q.text||'').trim()).map(q=>estList(ri,q));
   if(r.type==='finale') return (S.finaleQs||[]).map(id=>FIN.questions.find(q=>q.id===id)).filter(Boolean).map(q=>finaleList(ri,q));
   return (r.lists||[]).map((l,li)=>makeList(ri,l,li));
 }
-const activeLists = ri => ROUNDS[ri].type==='finale' ? roundLists(ri) : roundLists(ri).filter(L=>!(S.off||[]).includes(L.key));
+const activeLists = ri => (ROUNDS[ri].type==='finale' || ROUNDS[ri].type==='estimate') ? roundLists(ri) : roundLists(ri).filter(L=>!(S.off||[]).includes(L.key));
 const activeRounds = () => ROUNDS.map((_,i)=>i).filter(i=>activeLists(i).length);
 const rno = ri => activeRounds().indexOf(ri)+1;          // round number as shown on screen
 const rtot = () => activeRounds().length;
@@ -627,6 +652,40 @@ function collectAnswers(L){
   return {answers, open};
 }
 
+/* ---------- Numbers for the estimate round ---------- */
+function parseNumber(text){
+  const t = String(text==null?'':text).toLowerCase().replace(/(\d)[\s '’](?=\d{3}\b)/g,'$1');
+  const m = t.match(/-?\d[\d.,]*\s*(k|duizend|thousand)?/);
+  if(!m) return null;
+  let n = m[0].trim().replace(/\s*(k|duizend|thousand)$/,'').trim().replace(/[.,]+$/,'');
+  const parts = n.split(/[.,]/);
+  if(parts.length>1 && parts.slice(1).every(x=>x.length===3)) n = parts.join('');   // 1.234 or 1,234,567 = thousands
+  else if(parts.length===2) n = parts[0]+'.'+parts[1];                              // 12,5 or 12.5 = decimal
+  else n = parts.join('');
+  let v = parseFloat(n);
+  if(isNaN(v)) return null;
+  if(m[1]) v *= 1000;
+  return v;
+}
+const ordinal = n => n+(n%100>=11&&n%100<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th'));
+function scoreEstimate(L, answers){
+  const truth = L.answer;
+  const guesses = answers.map(a=>({a, g: parseNumber(a.text)}));
+  const valid = guesses.filter(x=>x.g!=null && truth!=null).map(x=>Object.assign(x, {d: Math.abs(x.g-truth)})).sort((x,y)=>x.d-y.d);
+  valid.forEach((x,k)=>{ x.rank = (k>0 && valid[k-1].d===x.d) ? valid[k-1].rank : k+1; });
+  return guesses.map(x=>{
+    if(!x.a.text.trim()) return noAnswer(x.a);
+    if(truth==null) return Object.assign({}, x.a, {chips:[{c:'warn',t:'No answer set: press I'}], pts:0});
+    if(x.g==null) return Object.assign({}, x.a, {chips:[{c:'warn',t:'No number found'}], pts:0});
+    const pts = PTS.estimate[x.rank-1] || 0;
+    return Object.assign({}, x.a, {pts, chips:[
+      {c:'', t:'Guess '+fmtNum(x.g)},
+      {c: x.d===0?'ok':'', t: x.d===0 ? 'Spot on!' : 'off by '+fmtNum(Math.round(x.d*100)/100)},
+      {c: pts>0?'ok':'', t: ordinal(x.rank)+' closest'+(pts>0?' +'+pts:'')}
+    ]});
+  });
+}
+
 /* ---------- Scoring per list type ---------- */
 const WORDN = {zero:0,none:0,nul:0,geen:0,one:1,een:1,'één':1,two:2,twee:2,three:3,drie:3};
 function parseBet(text){
@@ -723,6 +782,7 @@ function scoreRound(L){
   let rows;
   if(L.type==='sort') rows = scoreSort(L, answers);
   else if(L.type==='finale') rows = scoreFinale(L, answers);
+  else if(L.type==='estimate') rows = scoreEstimate(L, answers);
   else rows = scoreList(L, answers);
   return {rows, open};
 }
@@ -854,6 +914,7 @@ function renderTimer(st){
 function revealSeq(L){
   if(L.type==='sort') return [5,4,3,2,1];
   if(L.type==='finale') return finaleRanking(L.fq).map((x,k)=>k).reverse();
+  if(L.type==='estimate') return [1];
   const seq = L.items.map(x=>x.rank).sort((a,b)=>b-a);
   if(L.bomb) seq.push('bomb');
   if(L.extra) seq.push('extra');
@@ -872,6 +933,7 @@ function renderBoard(L){
   const foot = `<div class="board-foot"><span><b>Source:</b> ${esc(L.source||'')}${yr}</span><span>${esc(L.dataDate||'')}</span></div>`;
   if(L.type==='sort') return renderSortBoard(L) + foot;
   if(L.type==='finale') return renderFinaleBoard(L) + foot;
+  if(L.type==='estimate') return renderEstimateBoard(L) + foot;
   const items = L.items.slice().sort((a,b)=>a.rank-b.rank);
   const tiles = items.map(it => tileHTML(it.rank,
       `<span class="n">${esc(it.place||it.rank)}</span>`,
@@ -888,6 +950,14 @@ function renderSortBoard(L){
       `<span class="n">${ord[k]}</span><span style="font-size:32px;font-weight:700">${esc(L.sortLabel||'')}</span>`,
       `<span class="badge">${p.l}</span><div class="lbl"><div class="l ${p.c.label.length>24?'long':''}">${esc(p.c.label)}</div><div class="s">${esc([p.c.hint, p.c.reveal].filter(Boolean).join(': '))}</div></div><span class="pts">${ptsLabel(PTS.sortPlace)}</span>`, 'slot')).join('');
   return `<div class="board-head">${esc(L.topic)}</div><div class="sortwrap"><div><h3>The 5 cards</h3>${picksHTML(L)}</div><div><h3>The right order</h3><div class="slots">${slots}</div></div></div>`;
+}
+function renderEstimateBoard(L){
+  const has = L.answer!=null;
+  const pts = PTS.estimate.map((p,k)=>ordinal(k+1)+' '+p).join(', ');
+  const back = has
+    ? `<div class="ans"><div class="ans-num">${fmtNum(L.answer)}</div>${L.unit?`<div class="ans-unit">${esc(L.unit)}</div>`:''}</div>`
+    : `<div class="ans"><div class="ans-unit">No answer set yet. Press I, Team stats.</div></div>`;
+  return `<div class="board-head">${esc(L.topic)}</div>${tileHTML(1, '<span class="q">?</span>', back, 'answer')}<p class="est-note">Closest guess wins. Points: ${esc(pts)}.</p>`;
 }
 function renderFinaleBoard(L){
   const q = finaleQ(L.fq); const list = finaleRanking(L.fq);
@@ -1277,7 +1347,12 @@ function renderSettings(el){
     <h2>Host settings</h2>
     <p class="sub">Saved automatically in this browser. Fill this in before the meeting, and don't share your screen while you do. To add or remove players, use “Who's playing?” (press 0, then →).</p>
     <h3>Lists to play <span class="est">${est.lists} lists in ${est.rounds} rounds: about ${est.min} minutes</span></h3>
-    <div class="rgroups">${ROUNDS.map((r,ri)=> r.type==='finale' ? '' : `<div class="rgroup"><div class="rname">${r.icon||''} ${esc(r.format)}</div><div class="qlist">${roundLists(ri).map(L=>`<label><input type="checkbox" data-list="${esc(L.key)}" ${(S.off||[]).includes(L.key)?'':'checked'}> ${esc(L.topic)}</label>`).join('')}</div></div>`).join('')}</div>
+    <div class="rgroups">${ROUNDS.map((r,ri)=> (r.type==='finale'||r.type==='estimate') ? '' : `<div class="rgroup"><div class="rname">${r.icon||''} ${esc(r.format)}</div><div class="qlist">${roundLists(ri).map(L=>`<label><input type="checkbox" data-list="${esc(L.key)}" ${(S.off||[]).includes(L.key)?'':'checked'}> ${esc(L.topic)}</label>`).join('')}</div></div>`).join('')}</div>
+    ${S.estQs.length?`<h3>Team stats <span class="est">your own numbers: they stay in this browser and never go online</span></h3>
+    <table class="ans esttab"><thead><tr><th style="text-align:left">Question</th><th>Unit</th><th>Real answer</th></tr></thead><tbody>
+    ${S.estQs.map((q,k)=>`<tr><td><input class="name estq" data-estq="${k}" value="${esc(q.text)}" placeholder="${k===0?'e.g. How many calls did we take on our busiest day this year?':'Question '+(k+1)+' (leave empty to skip)'}" aria-label="Team stats question ${k+1}"></td><td><input class="estu" data-estu="${k}" value="${esc(q.unit)}" placeholder="${k===0?'calls':''}" aria-label="Unit ${k+1}"></td><td><input class="esta" data-esta="${k}" value="${esc(q.answer)}" inputmode="decimal" placeholder="${k===0?'412':''}" aria-label="Real answer ${k+1}"></td></tr>`).join('')}
+    </tbody></table>
+    <div id="estBox">${estWarn()}</div>`:''}
     ${FIN?`<h3>Finale questions <span class="est">pick 1 to 3; each one is a list in the finale</span></h3>
     <div class="qlist">${qs.map((q,k)=>`<label><input type="checkbox" data-fq="${q.id}" ${fsel.includes(q.id)?'checked':''}> Q${k+1}. ${esc(q.text)}</label>`).join('')}</div>
     <h3>Players' answers</h3>
@@ -1298,6 +1373,10 @@ function renderSettings(el){
     if(!rtot()){ keepStep(()=>{ S.off = off.filter(k=>k!==key); }); }
     renderSettings(el); const again = el.querySelector(`input[data-list="${key}"]`); if(again) again.focus();
   }));
+  const estChange = (k, field, v) => { keepStep(()=>{ S.estQs[k][field] = v; }); const b=$('#estBox'); if(b) b.innerHTML = estWarn(); };
+  el.querySelectorAll('input[data-estq]').forEach(x=>x.addEventListener('change',()=>{ estChange(+x.dataset.estq,'text',x.value.trim()); renderSettings(el); }));
+  el.querySelectorAll('input[data-estu]').forEach(x=>x.addEventListener('change',()=>estChange(+x.dataset.estu,'unit',x.value.trim())));
+  el.querySelectorAll('input[data-esta]').forEach(x=>x.addEventListener('change',()=>estChange(+x.dataset.esta,'answer',x.value.trim())));
   el.querySelectorAll('input[data-fq]').forEach(x=>x.addEventListener('change',()=>{
     let sel = (S.finaleQs||[]).filter(id=>id!==x.dataset.fq);
     if(x.checked) sel.push(x.dataset.fq);
@@ -1312,6 +1391,13 @@ function renderSettings(el){
   el.querySelector('[data-act=resetAll]').addEventListener('click',e=>confirmClick(e.currentTarget, 'Click again: reset everything', ()=>{ S=defaults(); syncArrays(); buildSteps(); save(); renderSettings(el); }));
   const tf = el.querySelector('[data-act=toFinale]');
   if(tf) tf.addEventListener('click',()=>{ const k=steps.findIndex(s=>s.kind==='intro'&&s.r===FINR); closeOverlays(); if(k>=0) go(k); });
+}
+function estWarn(){
+  const qs = (S.estQs||[]).filter(q=>String(q.text||'').trim());
+  if(!qs.length) return '<div class="warn">No team stats questions yet, so this round is skipped. Type at least one question and its real answer.</div>';
+  const missing = qs.filter(q=>parseNumber(q.answer)==null);
+  if(missing.length) return `<div class="warn">No real answer (a number) for: ${esc(missing.map(q=>q.text).join(' / '))}.</div>`;
+  return `<div class="ok">✅ ${qs.length} question${qs.length>1?'s':''} ready.</div>`;
 }
 function tieAll(){
   return (S.finaleQs||[]).map(id=>{

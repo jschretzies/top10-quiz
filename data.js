@@ -13,6 +13,7 @@
   - points.top: the answer at place 1
   - points.bomb: the answer at place 11 (the bomb)
   - points.sortPlace: every card in the right place (sort rounds)
+  - points.estimate: closest guess first, then the next (estimate rounds)
 
   Top-10 lists
   - Exactly 10 items plus one "bomb" (place 11). "rank" is the order (1 to 10, each once).
@@ -32,7 +33,7 @@ window.QUIZ = {
   subtitle: "The Dexcom team quiz",
   timerSeconds: 45,
 
-  points: { hit: 1, top: 3, bomb: -1, sortPlace: 1 },
+  points: { hit: 1, top: 3, bomb: -1, sortPlace: 1, estimate: [5, 4, 3, 2, 1] },
 
   // Optional: names to pre-fill on the "Who's playing?" screen (max 10).
   players: [],
@@ -240,66 +241,6 @@ window.QUIZ = {
 
     /* ------------------------------------------------------------------ */
     {
-      type: "classic",
-      format: "Work life in Europe",
-      icon: "💼",
-      intro: "Home office, short weeks, long weeks: how does Europe work? European countries in Eurostat's labour force survey.",
-      howTo: [
-        "Type 3 countries in the Teams chat. Don't send yet.",
-        "English or Dutch country names both work."
-      ],
-      scoring: "In the top 10 = 1 point, number 1 = 3 points, bomb = −1.",
-      guesses: 3,
-      lists: [
-        {
-          id: "wfh",
-          topic: "Where in Europe do the most people usually work from home?",
-          hook: "Share of everyone with a job (15 to 64) who usually works from home.",
-          source: "Eurostat, Employed persons working from home (lfsa_ehomp): usually, 15–64, % of employment",
-          year: "2025",
-          dataDate: "Eurostat data for 2025",
-          items: [
-            { rank: 1, label: "Finland", sub: "20.5% usually work from home", alias: ["Suomi"] },
-            { rank: 2, label: "Ireland", sub: "19.2%", alias: ["Ierland"] },
-            { rank: 3, label: "Belgium", sub: "13.2%", alias: ["België", "Belgie"] },
-            { rank: 4, label: "Germany", sub: "13.0%", alias: ["Duitsland"] },
-            { rank: 5, label: "Malta", sub: "12.5%" },
-            { rank: 6, label: "Sweden", sub: "12.4%", alias: ["Zweden"] },
-            { rank: 7, label: "Estonia", sub: "11.6%", alias: ["Estland"] },
-            { rank: 8, label: "Netherlands", sub: "11.3%", alias: ["Nederland", "Holland", "The Netherlands", "NL"] },
-            { rank: 9, label: "Luxembourg", sub: "11.2%", alias: ["Luxemburg"] },
-            { rank: 10, label: "France", sub: "11.1%", alias: ["Frankrijk"] }
-          ],
-          bomb: { rank: 11, label: "Austria", sub: "10.8%", alias: ["Oostenrijk"] },
-          extra: { title: "And Lithuania?", big: "5.1%", text: "Lithuania is #23 of 34 countries. The EU average is 8.8%." }
-        },
-        {
-          id: "shortweek",
-          topic: "Where in Europe is the working week the shortest?",
-          hook: "Average usual hours per week in the main job, full-time and part-time together.",
-          source: "Eurostat, Average number of usual weekly hours of work in main job (lfsa_ewhun2): employed, 15–64, all jobs",
-          year: "2025",
-          dataDate: "Eurostat data for 2025",
-          items: [
-            { rank: 1, label: "Netherlands", sub: "31.5 hours a week", alias: ["Nederland", "Holland", "The Netherlands", "NL"] },
-            { rank: 2, label: "Denmark", sub: "33.6 hours", alias: ["Denemarken"] },
-            { rank: 3, place: "=3", label: "Norway", sub: "34.8 hours", alias: ["Noorwegen"] },
-            { rank: 4, place: "=3", label: "Germany", sub: "34.8 hours", alias: ["Duitsland"] },
-            { rank: 5, label: "Ireland", sub: "35.7 hours", alias: ["Ierland"] },
-            { rank: 6, place: "=6", label: "Finland", sub: "35.8 hours", alias: ["Suomi"] },
-            { rank: 7, place: "=6", label: "Austria", sub: "35.8 hours", alias: ["Oostenrijk"] },
-            { rank: 8, label: "Switzerland", sub: "35.9 hours", alias: ["Zwitserland", "Swiss"] },
-            { rank: 9, label: "Belgium", sub: "36.1 hours", alias: ["België", "Belgie"] },
-            { rank: 10, label: "France", sub: "37.0 hours", alias: ["Frankrijk"] }
-          ],
-          bomb: { rank: 11, label: "Italy", sub: "37.2 hours", alias: ["Italië", "Italie"] },
-          extra: { title: "And the longest?", big: "44.0", text: "Hours a week in Türkiye. Lithuania: 39.2 hours, the EU average 37.0." }
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
       type: "sort",
       format: "Then and now",
       icon: "⏳",
@@ -358,6 +299,22 @@ window.QUIZ = {
           ]
         }
       ]
+    },
+    /* ------------------------------------------------------------------ */
+    {
+      type: "estimate",
+      format: "Team stats",
+      icon: "📊",
+      intro: "How well do you know our own numbers? One guess per question, and the closest guess wins.",
+      howTo: [
+        "Type one number in the Teams chat. Don't send yet.",
+        "Closest guess gets 5 points, then 4, 3, 2 and 1."
+      ],
+      scoring: "Closest 5 points, then 4, 3, 2, 1. Same distance = same points.",
+      source: "Our own team numbers",
+      // The questions and the real answers are NOT in this file (it is public on GitHub).
+      // Type them in the game: press I, "Team stats". They stay in your browser only.
+      maxQuestions: 3
     }
   ]
 };

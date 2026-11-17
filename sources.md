@@ -3,10 +3,10 @@
 All lists were checked on **13–14 November 2026**, directly on the source. Nothing is made up.
 Where a list changes over time, the date is shown on the board.
 
-**Scoring:** an answer in the top 10 = 1 point, the answer at place 1 = 3 points, the bomb (place 11) = −1. Sort lists: 1 point per item in the right place. Change it in `data.js` under `points`.
+**Scoring:** an answer in the top 10 = 1 point, the answer at place 1 = 3 points, the bomb (place 11) = −1. Sort lists: 1 point per item in the right place. Team stats: closest guess 5 points, then 4, 3, 2, 1 (same distance = same points). Change it in `data.js` under `points`.
 
 **Not used, and why:**
-- Working hours per country from the OECD: the OECD itself says those figures are unsuitable for comparing countries. (The Eurostat figures used below are harmonised for comparison.)
+- Working hours per country from the OECD: the OECD itself says those figures are unsuitable for comparing countries.
 - The IDF's own age-adjusted prevalence: places 10 and 11 are tied (Sudan and Syria, both 19%). That's why the adults list uses the exact calculation below.
 - Medtech companies by stock market value or R&D spending: no reliable full list.
 - Glycemic index and carbs as a top 10: too many ties in the tables. They're used as sort lists, with 5 foods whose values are clearly apart.
@@ -127,45 +127,7 @@ The IDF publishes counts per country. I calculated the percentages from two IDF 
 
 ---
 
-## Round 3: Work life in Europe
-
-European countries in Eurostat's labour force survey (EU countries plus Iceland, Norway, Switzerland and candidate countries). EU and euro-area averages are not counted as places.
-
-### List 1: Most people usually working from home
-
-- **Source:** Eurostat, *Employed persons working from home* (lfsa_ehomp): usually, all employed, 15–64, % of employment, 2025 (updated 30 October 2026). https://ec.europa.eu/eurostat/databrowser/view/lfsa_ehomp/default/table
-- **Confidence:** High. France's figure is flagged by Eurostat as "definition differs".
-
-| Place | Country | % | | Place | Country | % |
-|---|---|---|---|---|---|---|
-| 1 | Finland | 20.5 | | 7 | Estonia | 11.6 |
-| 2 | Ireland | 19.2 | | 8 | Netherlands | 11.3 |
-| 3 | Belgium | 13.2 | | 9 | Luxembourg | 11.2 |
-| 4 | Germany | 13.0 | | 10 | France | 11.1 |
-| 5 | Malta | 12.5 | | **11 (bomb)** | **Austria** | 10.8 |
-| 6 | Sweden | 12.4 | | 23 | Lithuania | 5.1 |
-
-EU average: 8.8%.
-
-### List 2: Shortest working week
-
-- **Source:** Eurostat, *Average number of usual weekly hours of work in main job* (lfsa_ewhun2): all employed, all activities, full-time and part-time together, 15–64, 2025. https://ec.europa.eu/eurostat/databrowser/view/lfsa_ewhun2/default/table
-- **Confidence:** High. Ties (same value to one decimal) are shown as "=3" and "=6"; they don't change anyone's points. France and Spain are flagged "definition differs".
-
-| Place | Country | Hours | | Place | Country | Hours |
-|---|---|---|---|---|---|---|
-| 1 | Netherlands | 31.5 | | =6 | Austria | 35.8 |
-| 2 | Denmark | 33.6 | | 8 | Switzerland | 35.9 |
-| =3 | Norway | 34.8 | | 9 | Belgium | 36.1 |
-| =3 | Germany | 34.8 | | 10 | France | 37.0 |
-| 5 | Ireland | 35.7 | | **11 (bomb)** | **Italy** | 37.2 |
-| =6 | Finland | 35.8 | | | Lithuania | 39.2 |
-
-Longest: Türkiye 44.0 hours. EU average 37.0.
-
----
-
-## Round 4: Then and now (sort)
+## Round 3: Then and now (sort)
 
 ### Dexcom history (timeline)
 
@@ -181,3 +143,11 @@ Longest: Türkiye 44.0 hours. EU average 37.0.
 
 - **Source:** kworb.net, Spotify most streamed songs of all time, 13 Nov 2026: https://kworb.net/spotify/songs.html
 - Wham! Last Christmas 2.28 bn (#2), Sia Snowman 1.54 bn (#4), Brenda Lee Rockin' Around the Christmas Tree 1.44 bn (#6), Andy Williams It's the Most Wonderful Time of the Year 1.21 bn (#8), Kelly Clarkson Underneath the Tree 1.04 bn (#10). **Right order:** D, B, E, A, C.
+
+---
+
+## Round 4: Team stats (estimate)
+
+- **Source:** your own team numbers. You type the questions and the real answers in the game (press **I**, "Team stats", up to 3 questions).
+- **Privacy:** these numbers are not in any file of the quiz. They are saved only in the browser where you type them, so they never end up on GitHub or in the online version for others.
+- **Scoring:** players type one number; the closest gets 5 points, then 4, 3, 2 and 1. Players at the same distance get the same points.
