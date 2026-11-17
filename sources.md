@@ -3,7 +3,7 @@
 All lists were checked on **13–14 November 2026**, directly on the source. Nothing is made up.
 Where a list changes over time, the date is shown on the board.
 
-**Scoring:** an answer in the top 10 = 1 point, the answer at place 1 = 3 points, the bomb (place 11) = −1. Sort lists and the finale: 1 point per item in the right place. Change it in `data.js` under `points`.
+**Scoring:** an answer in the top 10 = 1 point, the answer at place 1 = 3 points, the bomb (place 11) = −1. Sort lists: 1 point per item in the right place. Change it in `data.js` under `points`.
 
 **Not used, and why:**
 - Working hours per country from the OECD: the OECD itself says those figures are unsuitable for comparing countries. (The Eurostat figures used below are harmonised for comparison.)
@@ -13,7 +13,7 @@ Where a list changes over time, the date is shown on the board.
 
 ---
 
-## Round 1: Diabetes around the world
+## Round 1: Diabetes around the world (with medtech as list 4)
 
 The IDF publishes counts per country. I calculated the percentages from two IDF tables of the same edition, and only included countries with **at least 1 million people in that age group** (this keeps out tiny islands whose figures are heavily rounded, such as Niue: 300 out of 1,200 adults).
 
@@ -78,9 +78,7 @@ The IDF publishes counts per country. I calculated the percentages from two IDF 
 | 5 | Luxembourg | 8,026 | | **11 (bomb)** | **Netherlands** | 6,235 |
 | 6 | Denmark | 7,718 | | 12 | Belgium | 5,689 |
 
----
-
-## Round 2: One shot: biggest medical device companies
+### List 4: Biggest medical device companies
 
 - **Source:** Medical Design & Outsourcing, *Medtech Big 100* (2026 edition, by annual revenue): https://www.medicaldesignandoutsourcing.com/2026-medtech-big-100-worlds-largest-medical-device-companies/
 - **Confidence:** High. Some companies count only their device segment (Abbott, BD).
@@ -96,7 +94,7 @@ The IDF publishes counts per country. I calculated the percentages from two IDF 
 
 ---
 
-## Round 3: Spike or not? (sort)
+## Round 2: Spike or not? (sort)
 
 ### Glycemic index lists (gi1, gi2, gi3)
 
@@ -129,7 +127,7 @@ The IDF publishes counts per country. I calculated the percentages from two IDF 
 
 ---
 
-## Round 4: Work life in Europe
+## Round 3: Work life in Europe
 
 European countries in Eurostat's labour force survey (EU countries plus Iceland, Norway, Switzerland and candidate countries). EU and euro-area averages are not counted as places.
 
@@ -167,7 +165,7 @@ Longest: Türkiye 44.0 hours. EU average 37.0.
 
 ---
 
-## Round 5: Then and now (sort)
+## Round 4: Then and now (sort)
 
 ### Dexcom history (timeline)
 
@@ -183,9 +181,3 @@ Longest: Türkiye 44.0 hours. EU average 37.0.
 
 - **Source:** kworb.net, Spotify most streamed songs of all time, 13 Nov 2026: https://kworb.net/spotify/songs.html
 - Wham! Last Christmas 2.28 bn (#2), Sia Snowman 1.54 bn (#4), Brenda Lee Rockin' Around the Christmas Tree 1.44 bn (#6), Andy Williams It's the Most Wonderful Time of the Year 1.21 bn (#8), Kelly Clarkson Underneath the Tree 1.04 bn (#10). **Right order:** D, B, E, A, C.
-
----
-
-## Round 6: Finale, team top 8
-
-- **Source:** your colleagues' answers to the form (`formulier.md`). Enter them with **I** and tick 1 to 3 questions; each becomes one list in the finale.

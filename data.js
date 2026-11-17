@@ -13,7 +13,6 @@
   - points.top: the answer at place 1
   - points.bomb: the answer at place 11 (the bomb)
   - points.sortPlace: every card in the right place (sort rounds)
-  - points.finalePlace: every colleague in the right place (finale)
 
   Top-10 lists
   - Exactly 10 items plus one "bomb" (place 11). "rank" is the order (1 to 10, each once).
@@ -33,7 +32,7 @@ window.QUIZ = {
   subtitle: "The Dexcom team quiz",
   timerSeconds: 45,
 
-  points: { hit: 1, top: 3, bomb: -1, sortPlace: 1, finalePlace: 1 },
+  points: { hit: 1, top: 3, bomb: -1, sortPlace: 1 },
 
   // Optional: names to pre-fill on the "Who's playing?" screen (max 10).
   players: [],
@@ -51,10 +50,10 @@ window.QUIZ = {
       type: "classic",
       format: "Diabetes around the world",
       icon: "🌍",
-      intro: "Three lists from the IDF Diabetes Atlas, the world's reference for diabetes numbers. Countries with at least 1 million people in that age group.",
+      intro: "Three lists from the IDF Diabetes Atlas (countries with at least 1 million people in that age group), and the biggest companies in our own industry.",
       howTo: [
-        "Type 3 countries in the Teams chat. Don't send yet.",
-        "English or Dutch country names both work."
+        "Type 3 answers in the Teams chat. Don't send yet.",
+        "Country names in English or Dutch both work."
       ],
       scoring: "In the top 10 = 1 point, number 1 = 3 points, bomb = −1.",
       guesses: 3,
@@ -121,27 +120,12 @@ window.QUIZ = {
           ],
           bomb: { rank: 11, label: "Netherlands", sub: "$6,235 per person", alias: ["Nederland", "Holland", "The Netherlands", "NL"] },
           extra: { title: "So close!", big: "$1.50", text: "That's how much less the Netherlands spends per person than Germany (#10). Belgium is #12, Lithuania #70." }
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      type: "classic",
-      format: "One shot",
-      icon: "🎯",
-      intro: "Our own industry. Just one guess, so think before you type.",
-      howTo: [
-        "You get just 1 guess. Make it count.",
-        "Type one company name in the Teams chat. Don't send yet."
-      ],
-      scoring: "In the top 10 = 1 point, number 1 = 3 points, bomb = −1.",
-      guesses: 1,
-      lists: [
+        },
         {
           id: "medtech",
           topic: "The biggest medical device companies in the world",
-          hook: "Ranked by annual revenue. Can you name one of the top 10? And where does Dexcom land?",
+          howTo: ["Type 3 company names in the Teams chat. Don't send yet.", "Abbreviations like J&J or GE are fine."],
+          hook: "Ranked by annual revenue. Can you name three of the top 10? And where does Dexcom land?",
           source: "Medical Design & Outsourcing, Medtech Big 100 (2026 edition)",
           year: "2026",
           items: [
@@ -373,35 +357,6 @@ window.QUIZ = {
             { label: "Rockin' Around the Christmas Tree", hint: "Brenda Lee", reveal: "#6 of all Christmas songs, 1.44 billion streams", order: 3 }
           ]
         }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      type: "finale",
-      format: "Finale: team top 8",
-      icon: "👑",
-      intro: "You all answered some questions before the meeting. Time to rank your colleagues.",
-      howTo: [
-        "Rank everyone, highest answer first.",
-        "Type the first names in order, separated by commas."
-      ],
-      scoring: "1 point for every colleague in the right place.",
-      source: "Your answers to the pre-meeting form",
-      // Pick 1 to 3 of these in the game (press I). Highest number = place 1.
-      questions: [
-        { id: "commute", text: "How many minutes is your commute to the office (one way)?", unit: "min" },
-        { id: "emails", text: "How many unread emails are in your inbox right now?", unit: "emails" },
-        { id: "tabs", text: "How many browser tabs do you have open right now?", unit: "tabs" },
-        { id: "meetings", text: "How many meetings are in your calendar this week?", unit: "meetings" },
-        { id: "coffee", text: "How many cups of coffee and tea do you drink in a normal work week?", unit: "cups" },
-        { id: "countries", text: "How many countries have you visited?", unit: "countries" },
-        { id: "months", text: "How many months have you worked at Dexcom?", unit: "months" },
-        { id: "photos", text: "How many photos are on your phone right now?", unit: "photos" },
-        { id: "calls", text: "How many calls or Teams meetings did you have yesterday?", unit: "calls" },
-        { id: "lunch", text: "How many minutes does your lunch break usually take?", unit: "min" },
-        { id: "wfh", text: "How many days did you work from home last month?", unit: "days" },
-        { id: "steps", text: "How many steps is it from your desk to the coffee machine?", unit: "steps" }
       ]
     }
   ]

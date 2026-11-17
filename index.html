@@ -309,10 +309,10 @@ button.cp{border:0;cursor:pointer;font-family:var(--font)}
 /* ---------- Rounds with several lists ---------- */
 .topchips{display:flex;gap:12px}
 .chip.soft{background:#fff;color:var(--green)}
-.list-head{font-size:30px;font-weight:800;color:var(--ink);margin:30px 0 10px}
+.list-head{font-size:30px;font-weight:800;color:var(--ink);margin:22px 0 8px}
 .toplist{margin:0;padding-left:44px;display:grid;gap:6px;font-size:30px;color:var(--ink)}
 .toplist li::marker{color:var(--green);font-weight:800}
-.intro .format{font-size:120px}
+.intro .format{font-size:100px}
 .qscreen{margin-top:70px}
 .qscreen.sortq{grid-template-columns:1fr 760px}
 .qtopic{font-weight:800;font-size:92px;line-height:1;letter-spacing:-.03em;color:var(--ink);margin:14px 0 26px;max-width:1150px}
@@ -350,13 +350,13 @@ const ROUNDS = Q.rounds;
 const FINR = ROUNDS.findIndex(r=>r.type==='finale');
 const FIN = FINR>=0 ? ROUNDS[FINR] : null;
 const MAX_P = 10;
-const LS_KEY = 'top10quiz.v3';
+const LS_KEY = 'top10quiz.v4';
 const MIN_PER_LIST = 3, MIN_PER_ROUND = 1;       // for the time estimate in the settings
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const has = (o,k) => Object.prototype.hasOwnProperty.call(o,k);
-const listKey = (ri, l, li) => ri+':'+(l.id||li);
+const listKey = (ri, l, li) => l.id || (ri+':'+li);   // keyed by the list's id, so moving lists between rounds keeps settings
 // Click twice to confirm. Pop-up dialogs (confirm) are blocked in some viewers, so the button asks itself.
 function confirmClick(btn, ask, fn){
   if(btn.dataset.armed){ clearTimeout(btn._t); delete btn.dataset.armed; btn.textContent = btn._label; fn(); return; }
@@ -397,8 +397,8 @@ try{
   if(raw){ S = Object.assign(S, JSON.parse(raw)); }
   else {
     // keep players and form answers from the previous version of the quiz
-    const old = localStorage.getItem('top10quiz.v2');
-    if(old){ const o = JSON.parse(old); if(Array.isArray(o.players)) S.players = o.players; if(o.answers) S.answers = o.answers; if(o.finaleQ) S.finaleQs = [o.finaleQ]; }
+    const old = localStorage.getItem('top10quiz.v3') || localStorage.getItem('top10quiz.v2');
+    if(old){ const o = JSON.parse(old); if(Array.isArray(o.players)) S.players = o.players; if(o.answers) S.answers = o.answers; if(Array.isArray(o.finaleQs)) S.finaleQs = o.finaleQs; else if(o.finaleQ) S.finaleQs = [o.finaleQ]; }
   }
   if(!S.answers) S.answers = {};
   if(Array.isArray(S.history)) S.history = {};
