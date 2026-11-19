@@ -104,6 +104,7 @@ h2.headline{font-weight:800;font-size:96px;line-height:1;margin:34px 0 40px;lett
 /* ---------- Timer ---------- */
 .timer-wrap{display:grid;grid-template-columns:1fr 640px;gap:60px;align-items:center;height:900px}
 .timer-left .format{font-weight:800;font-size:44px;color:var(--green)}
+.timer-hook{font-size:32px;color:var(--muted);margin:-18px 0 30px;line-height:1.3;max-width:1050px}
 .timer-left .topic{font-weight:800;font-size:76px;line-height:1;margin:10px 0 34px;letter-spacing:-.025em;color:var(--ink)}
 .ring{position:relative;width:640px;height:640px}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
@@ -509,7 +510,7 @@ function buildSteps(){
   activeRounds().forEach(ri=>{
     const ls = activeLists(ri);
     steps.push({kind:'intro', r:ri});
-    ls.forEach((L,k)=>(L.type==='estimate' ? ['question','timer','paste','board'] : ['question','timer','board','paste']).forEach(kind=>steps.push({kind, r:ri, L, qn:k+1, qt:ls.length})));
+    ls.forEach((L,k)=>(L.type==='estimate' ? ['timer','paste','board'] : ['timer','board','paste']).forEach(kind=>steps.push({kind, r:ri, L, qn:k+1, qt:ls.length})));
     steps.push({kind:'scores', r:ri});
   });
   steps.push({kind:'winner'});
@@ -932,7 +933,7 @@ function renderTimer(st){
     left = `<div class="namegrid">${names.map(n=>`<div>${esc(n)}</div>`).join('')}</div>`;
   }
   return topbar(st) + `<div class="timer-wrap"><div class="timer-left">
-     <div class="format">Type, don't send</div><div class="topic">${esc(L.topic)}</div>${left}
+     <div class="format">Type, don't send</div><div class="topic">${esc(L.topic)}</div>${L.hook && L.type!=='sort' ? `<p class="timer-hook">${esc(L.hook)}</p>` : ''}${left}
      <p class="nametip">Start with your first name: <b>${esc(exampleName())}: …</b></p></div>
      <div class="ring" id="ring"><svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"/><circle class="bar" id="ringBar" cx="100" cy="100" r="90" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="0"/></svg>
      <div class="num" id="ringNum"></div><div class="state" id="ringState"></div></div></div>`;
@@ -958,7 +959,7 @@ function labelHTML(L, it){
 }
 function renderBoard(L){
   const yr = L.year && !String(L.source||'').includes(L.year) ? ` (${esc(L.year)})` : '';
-  const foot = `<div class="board-foot"><span><b>Source:</b> ${esc(L.source||'')}${yr}</span><span>${esc([L.dataDate, L.explain?'X: explanation':''].filter(Boolean).join('  ·  '))}</span></div>`;
+  const foot = `<div class="board-foot"><span><b>Source:</b> ${esc(L.source||'')}${yr}</span><span>${esc(L.dataDate||'')}</span></div>`;
   if(L.type==='sort') return renderSortBoard(L) + foot;
   if(L.type==='finale') return renderFinaleBoard(L) + foot;
   if(L.type==='estimate') return renderEstimateBoard(L) + foot;
@@ -1169,7 +1170,7 @@ function startTimer(){
 function stopTimer(){ T.running=false; clearInterval(T.id); T.id=null; }
 function toggleTimer(){
   const st=steps[S.step];
-  if(st.kind==='question'){ go(S.step+1); startTimer(); return; }
+  if(st.kind==='question' || (st.kind==='intro' && steps[S.step+1] && steps[S.step+1].kind==='timer')){ go(S.step+1); startTimer(); return; }
   if(st.kind!=='timer') return;
   T.running ? (stopTimer(), drawTimer()) : startTimer();
 }
