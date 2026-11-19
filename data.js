@@ -22,6 +22,7 @@
   - "alias" = other ways people may write an answer (Dutch names, abbreviations).
     Small typos are forgiven anyway.
   - "extra" = an optional card after the bomb. "dataDate" shows on the board.
+  - "explain" = optional explanation; press X on the board to show it.
 
   Sort lists ("Sort it" rounds)
   - "cards" are the 5 things shown to players, in this order: A, B, C, D, E.
@@ -51,7 +52,7 @@ window.QUIZ = {
       type: "classic",
       format: "Diabetes around the world",
       icon: "🌍",
-      intro: "Three lists from the IDF Diabetes Atlas (countries with at least 1 million people in that age group), and the biggest companies in our own industry.",
+      intro: "Three lists from the IDF Diabetes Atlas, two of them about Europe, and the biggest companies in our own industry.",
       howTo: [
         "Type 3 answers in the Teams chat. Don't send yet.",
         "Country names in English or Dutch both work."
@@ -61,45 +62,47 @@ window.QUIZ = {
       lists: [
         {
           id: "adultspct",
-          topic: "Where is the share of adults with diabetes the highest?",
+          topic: "Where in Europe is the share of adults with diabetes the highest?",
           hook: "Not the most people, but the biggest percentage of adults (20 to 79).",
-          source: "IDF Diabetes Atlas, 11th edition (2024 estimates): people with diabetes ÷ adult population (20–79 y), countries with at least 1 million adults",
+          source: "IDF Diabetes Atlas, 11th edition (2024 estimates): people with diabetes ÷ adult population (20–79 y), European countries (UN definition) with at least 100,000 adults",
           year: "2024",
           items: [
-            { rank: 1, label: "Kuwait", sub: "28.36% of adults", alias: ["Koeweit"] },
-            { rank: 2, label: "Pakistan", sub: "26.48% of adults" },
-            { rank: 3, label: "Saudi Arabia", sub: "21.39% of adults", alias: ["Saudi", "KSA", "Saoedi-Arabië", "Saoedi Arabie"] },
-            { rank: 4, label: "Malaysia", sub: "19.86% of adults", alias: ["Maleisië", "Maleisie"] },
-            { rank: 5, label: "Egypt", sub: "19.84% of adults", alias: ["Egypte"] },
-            { rank: 6, label: "Qatar", sub: "18.66% of adults" },
-            { rank: 7, label: "Bahrain", sub: "17.85% of adults" },
-            { rank: 8, label: "Algeria", sub: "16.87% of adults", alias: ["Algerije"] },
-            { rank: 9, label: "Tunisia", sub: "16.60% of adults", alias: ["Tunesië", "Tunesie"] },
-            { rank: 10, label: "Dominican Republic", sub: "16.59% of adults", alias: ["Dominicaanse Republiek", "Dominican Rep"] }
+            { rank: 1, label: "Portugal", sub: "14.25% of adults" },
+            { rank: 2, label: "Croatia", sub: "13.66% of adults", alias: ["Kroatië", "Kroatie", "Hrvatska"] },
+            { rank: 3, label: "Serbia", sub: "13.29% of adults", alias: ["Servië", "Servie"] },
+            { rank: 4, label: "Spain", sub: "13.07% of adults", alias: ["Spanje", "España", "Espana"] },
+            { rank: 5, label: "Bosnia and Herzegovina", sub: "12.94% of adults", alias: ["Bosnia", "Bosnië", "Bosnie", "Bosnië-Herzegovina"] },
+            { rank: 6, label: "Montenegro", sub: "12.73% of adults" },
+            { rank: 7, label: "Albania", sub: "12.43% of adults", alias: ["Albanië", "Albanie"] },
+            { rank: 8, label: "Malta", sub: "11.51% of adults" },
+            { rank: 9, label: "Greece", sub: "11.41% of adults", alias: ["Griekenland"] },
+            { rank: 10, label: "Italy", sub: "11.37% of adults", alias: ["Italië", "Italie", "Italia"] }
           ],
-          bomb: { rank: 11, label: "United Arab Emirates", sub: "16.53% of adults", alias: ["UAE", "Emirates", "Dubai", "Verenigde Arabische Emiraten", "VAE"] },
-          extra: { title: "And closer to home?", big: "#101", text: "The Netherlands: 6.9% of adults. Belgium is #91 (7.6%), Lithuania #53 (10.6%)." }
+          bomb: { rank: 11, label: "Lithuania", sub: "10.63% of adults", alias: ["Litouwen", "Lietuva"] },
+          extra: { title: "And the Netherlands?", big: "#33", text: "6.9% of adults, out of 39 European countries. Belgium is #29 (7.6%), Germany #12 (10.6%)." },
+          explain: "Share = adults (20 to 79) with diabetes ÷ all adults, from the IDF Diabetes Atlas 2024 estimates. European countries by the UN definition, without micro-states. This is the plain share, not age-adjusted, so countries with an older population come out a bit higher. Southern Europe leads; the Netherlands is near the bottom with 6.9%."
         },
         {
           id: "kidspct",
-          topic: "Where is type 1 diabetes most common in children and teens?",
+          topic: "Where in Europe is type 1 diabetes most common in children and teens?",
           hook: "The share of everyone aged 0 to 19 who lives with type 1: the people who grow up with a sensor on their arm.",
-          source: "IDF Diabetes Atlas, 11th edition (2024 estimates): people with type 1 diabetes (0–19 y) ÷ population 0–19, countries with at least 1 million children and teens",
+          source: "IDF Diabetes Atlas, 11th edition (2024 estimates): people with type 1 diabetes (0–19 y) ÷ population 0–19, European countries (UN definition) with at least 100,000 children and teens",
           year: "2024",
           items: [
-            { rank: 1, label: "Finland", sub: "0.67%: 1 in 149 children", alias: ["Finland", "Suomi"] },
-            { rank: 2, label: "Saudi Arabia", sub: "0.44%: 1 in 226 children", alias: ["Saudi", "KSA", "Saoedi-Arabië", "Saoedi Arabie"] },
-            { rank: 3, label: "United Arab Emirates", sub: "0.44%: 1 in 229 children", alias: ["UAE", "Emirates", "Dubai", "Verenigde Arabische Emiraten", "VAE"] },
-            { rank: 4, label: "Oman", sub: "0.41%: 1 in 245 children" },
-            { rank: 5, label: "Sweden", sub: "0.38%: 1 in 260 children", alias: ["Zweden"] },
-            { rank: 6, label: "Kuwait", sub: "0.35%: 1 in 288 children", alias: ["Koeweit"] },
-            { rank: 7, label: "Norway", sub: "0.34%: 1 in 291 children", alias: ["Noorwegen"] },
-            { rank: 8, label: "Canada", sub: "0.34%: 1 in 296 children" },
-            { rank: 9, label: "Libya", sub: "0.34%: 1 in 298 children", alias: ["Libië", "Libie"] },
-            { rank: 10, label: "Tunisia", sub: "0.33%: 1 in 302 children", alias: ["Tunesië", "Tunesie"] }
+            { rank: 1, label: "Finland", sub: "0.672%: 1 in 149 children", alias: ["Suomi"] },
+            { rank: 2, label: "Sweden", sub: "0.384%: 1 in 260 children", alias: ["Zweden"] },
+            { rank: 3, label: "Norway", sub: "0.344%: 1 in 291 children", alias: ["Noorwegen"] },
+            { rank: 4, label: "Estonia", sub: "0.325%: 1 in 307 children", alias: ["Estland"] },
+            { rank: 5, label: "Latvia", sub: "0.325%: 1 in 308 children", alias: ["Letland"] },
+            { rank: 6, label: "Ireland", sub: "0.2845%: 1 in 351 children", alias: ["Ierland"] },
+            { rank: 7, label: "Denmark", sub: "0.2844%: 1 in 352 children", alias: ["Denemarken"] },
+            { rank: 8, label: "Slovakia", sub: "0.2843%: 1 in 352 children", alias: ["Slowakije"] },
+            { rank: 9, label: "Ukraine", sub: "0.278%: 1 in 360 children", alias: ["Oekraïne", "Oekraine"] },
+            { rank: 10, label: "Belarus", sub: "0.2662%: 1 in 376 children", alias: ["Wit-Rusland", "Witrusland", "Belarus"] }
           ],
-          bomb: { rank: 11, label: "Morocco", sub: "0.33%: 1 in 305 children", alias: ["Marokko"] },
-          extra: { title: "And closer to home?", big: "#32", text: "The Netherlands: 0.18%, about 1 in 540 children. Belgium is #31, at the same level." }
+          bomb: { rank: 11, label: "Germany", sub: "0.2660%: 1 in 376 children", alias: ["Duitsland"] },
+          extra: { title: "And closer to home?", big: "#26", text: "The Netherlands: 1 in 543 children, out of 37 European countries. Belgium is #25, Lithuania #16 (1 in 427)." },
+          explain: "Share = children and teens (0 to 19) with type 1 diabetes ÷ everyone aged 0 to 19. Northern Europe has the highest rates of type 1 in the world, and Finland holds the world record. The exact reasons are not fully understood; genes and environment both play a role."
         },
         {
           id: "spend",
@@ -120,7 +123,8 @@ window.QUIZ = {
             { rank: 10, label: "Germany", sub: "$6,237 per person", alias: ["Duitsland"] }
           ],
           bomb: { rank: 11, label: "Netherlands", sub: "$6,235 per person", alias: ["Nederland", "Holland", "The Netherlands", "NL"] },
-          extra: { title: "So close!", big: "$1.50", text: "That's how much less the Netherlands spends per person than Germany (#10). Belgium is #12, Lithuania #70." }
+          extra: { title: "So close!", big: "$1.50", text: "That's how much less the Netherlands spends per person than Germany (#10). Belgium is #12, Lithuania #70." },
+          explain: "Health spending on diabetes per person with diabetes (20 to 79), in US dollars, from the IDF Diabetes Atlas. Countries with expensive healthcare systems spend the most. It says how much is spent, not how good the care is."
         },
         {
           id: "medtech",
@@ -142,7 +146,8 @@ window.QUIZ = {
             { rank: 10, label: "BD", sub: "medical + interventional: $18.5 billion", alias: ["Becton Dickinson", "Becton, Dickinson and Company", "Becton"] }
           ],
           bomb: { rank: 11, label: "Henry Schein", sub: "$13.2 billion", alias: ["Schein"] },
-          extra: { title: "And Dexcom?", big: "#27", text: "$4.66 billion in revenue, up 3 places from last year." }
+          extra: { title: "And Dexcom?", big: "#27", text: "$4.66 billion in revenue, up 3 places from last year." },
+          explain: "Annual revenue from medical devices in the latest financial year, from the Medtech Big 100 by Medical Design & Outsourcing. Abbott and BD only count their device business. Dexcom is #27 with $4.66 billion."
         }
       ]
     },
@@ -172,7 +177,8 @@ window.QUIZ = {
             { label: "Watermelon", hint: "raw", reveal: "GI 76", order: 1 },
             { label: "Popcorn", hint: "a bowl of it", reveal: "GI 65", order: 3 },
             { label: "White rice", hint: "boiled", reveal: "GI 73", order: 2 }
-          ]
+          ],
+          explain: "The glycemic index (GI) compares how fast a food raises blood glucose with pure glucose (GI 100). Fat and protein slow digestion down, which is why chocolate and ice cream score lower than watermelon or potato. GI says nothing about the portion size; that's what carb counting is for."
         },
         {
           id: "carbs1",
@@ -187,7 +193,8 @@ window.QUIZ = {
             { label: "A bowl of white rice", hint: "1 cup, cooked", reveal: "44.6 g carbs", order: 1 },
             { label: "A glass of milk", hint: "whole milk, 240 ml", reveal: "11.7 g carbs", order: 4 },
             { label: "A banana", hint: "medium", reveal: "26.9 g carbs", order: 3 }
-          ]
+          ],
+          explain: "Grams of carbohydrate in one normal portion, from the USDA food database. People on insulin count the carbs of every meal to dose it. Cheese and nuts have almost none; rice, bagels and soft drinks are the big ones."
         },
         {
           id: "gi2",
@@ -202,7 +209,8 @@ window.QUIZ = {
             { label: "Soft drink", hint: "a regular soda", reveal: "GI 59", order: 4 },
             { label: "Whole wheat bread", hint: "a slice", reveal: "GI 74", order: 2 },
             { label: "Table sugar", hint: "sucrose", reveal: "GI 65", order: 3 }
-          ]
+          ],
+          explain: "The glycemic index (GI) compares how fast a food raises blood glucose with pure glucose (GI 100). Fat and protein slow digestion down, which is why chocolate and ice cream score lower than watermelon or potato. GI says nothing about the portion size; that's what carb counting is for."
         },
         {
           id: "carbs2",
@@ -218,7 +226,8 @@ window.QUIZ = {
             { label: "A bagel", hint: "plain, medium", reveal: "55.0 g carbs", order: 1 },
             { label: "A can of beer", hint: "355 ml", reveal: "12.6 g carbs", order: 4 },
             { label: "A Snickers", hint: "regular bar, 57 g", reveal: "35.1 g carbs", order: 2 }
-          ]
+          ],
+          explain: "Grams of carbohydrate in one normal portion, from the USDA food database. People on insulin count the carbs of every meal to dose it. Cheese and nuts have almost none; rice, bagels and soft drinks are the big ones."
         },
         {
           id: "gi3",
@@ -234,7 +243,8 @@ window.QUIZ = {
             { label: "Cornflakes", hint: "a bowl", reveal: "GI 81", order: 1 },
             { label: "Orange juice", hint: "a glass", reveal: "GI 50", order: 4 },
             { label: "Brown rice", hint: "boiled", reveal: "GI 68", order: 2 }
-          ]
+          ],
+          explain: "The glycemic index (GI) compares how fast a food raises blood glucose with pure glucose (GI 100). Fat and protein slow digestion down, which is why chocolate and ice cream score lower than watermelon or potato. GI says nothing about the portion size; that's what carb counting is for."
         }
       ]
     },
@@ -264,7 +274,8 @@ window.QUIZ = {
             { label: "Dexcom is founded", hint: "Dexcom", reveal: "1999, San Diego", order: 1 },
             { label: "First Dexcom CGM approved (the STS)", hint: "Dexcom", reveal: "2006", order: 3 },
             { label: "Dexcom goes public on the Nasdaq", hint: "Dexcom", reveal: "2005", order: 2 }
-          ]
+          ],
+          explain: "Dexcom was founded in San Diego in 1999 and went public in 2005. Its first CGM, the STS (a 3-day sensor), was approved in 2006: one year before the first iPhone. The G6 followed in 2018."
         },
         {
           id: "timeline2",
@@ -279,7 +290,8 @@ window.QUIZ = {
             { label: "Share approved: follow someone's glucose on your phone", hint: "Dexcom", reveal: "January 2015", order: 1 },
             { label: "The Apple Watch goes on sale", hint: "Apple", reveal: "April 2015", order: 2 },
             { label: "Dexcom joins the Nasdaq-100", hint: "Dexcom", reveal: "April 2020", order: 3 }
-          ]
+          ],
+          explain: "Dexcom Share (January 2015) let parents follow their child's glucose on their own phone, three months before the Apple Watch went on sale. The G7 was approved in December 2022, one month after ChatGPT launched."
         },
         {
           id: "xmas",
@@ -312,9 +324,14 @@ window.QUIZ = {
       ],
       scoring: "Closest 5 points, then 4, 3, 2, 1. Same distance = same points.",
       source: "Our own team numbers",
-      // The questions and the real answers are NOT in this file (it is public on GitHub).
+      // The real answers are NOT in this file (it is public on GitHub).
       // Type them in the game: press I, "Team stats". They stay in your browser only.
-      maxQuestions: 3
+      maxQuestions: 3,
+      questions: [
+        { text: "How many calls did the Dutch team handle on the busiest day of the year?", unit: "calls" },
+        { text: "How many calls did the Dutch team have this year?", unit: "calls" },
+        { text: "How many WSS were handled by the Dutch team this year?", unit: "WSS" }
+      ]
     }
   ]
 };

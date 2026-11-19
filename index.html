@@ -150,6 +150,7 @@ h2.headline{font-weight:800;font-size:96px;line-height:1;margin:34px 0 40px;lett
 .bomb .pts{background:#fff;color:var(--low)}
 .board-foot{position:absolute;left:80px;right:80px;bottom:20px;font-size:22px;color:var(--muted);display:flex;justify-content:space-between;gap:30px}
 .board-foot b{color:var(--ink);font-weight:700}
+.board-foot span:last-child{white-space:nowrap;flex:none}
 
 /* sort board */
 .sortwrap{display:grid;grid-template-columns:600px 1fr;gap:56px}
@@ -333,6 +334,30 @@ button.cp{border:0;cursor:pointer;font-family:var(--font)}
 table.esttab input.estq{width:900px}
 table.esttab input.estu{width:180px}
 table.esttab input.esta{width:180px}
+/* ---------- Estimate reveal and explanations ---------- */
+.estwrap{display:grid;grid-template-columns:700px 1fr;gap:50px;align-items:start;margin-top:10px}
+.estwrap .tile.answer{width:700px;height:420px;margin:0}
+.estwrap .ans-num{font-size:170px}
+.rank-list{position:relative;display:grid;gap:10px;align-content:start;min-height:420px}
+.rk-wait{position:absolute;inset:0;display:grid;place-items:center;margin:0;font-size:48px;font-weight:800;color:var(--muted);border:4px dashed #CFD3DB;border-radius:28px;transition:opacity .4s}
+.rank-list.open .rk-wait{opacity:0}
+.rk-row{display:grid;grid-template-columns:90px 1fr 170px 230px 90px;gap:14px;align-items:center;background:#fff;border-radius:9999px;height:62px;padding:0 10px 0 16px;font-size:28px;opacity:0;transform:translateY(16px);transition:opacity .45s, transform .45s;transition-delay:calc(var(--i) * .35s)}
+.rank-list.open .rk-row{opacity:1;transform:none}
+.rank-list.instant .rk-row,.rank-list.instant .rk-wait{transition:none}
+.rk-pl{font-weight:800;color:var(--muted);text-align:center}
+.rk-nm{font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk-g{font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.rk-d{color:var(--muted);font-size:24px}
+.rk-p{font-weight:800;text-align:center;border-radius:9999px;background:var(--green);color:#fff;height:46px;display:grid;place-items:center}
+.rk-p.zero{background:var(--grey);color:var(--muted)}
+.rk-row.win{background:var(--high);height:78px;font-size:34px}
+.rk-row.win .rk-pl{font-size:40px}
+.rk-row.win .rk-d{color:var(--ink)}
+.rk-empty{font-size:30px;color:var(--muted);margin:0;padding:30px}
+.explain-card{max-width:1100px;text-align:left !important;align-items:flex-start !important}
+.explain-card h3{margin:0 0 18px !important}
+.explain-card p{font-size:40px !important;line-height:1.4;max-width:none !important}
+.explain-hint{margin-top:26px;font-size:24px;color:var(--muted)}
 @media (prefers-reduced-motion: reduce){
   *{animation:none !important;transition:none !important}
 }
@@ -343,6 +368,7 @@ table.esttab input.esta{width:180px}
   <div id="screen" class="screen"></div>
   <div class="flash" id="flash"></div>
   <div class="extra" id="extra"></div>
+  <div class="extra" id="explainBox"></div>
   <div class="overlay" id="sbOverlay"></div>
   <div class="overlay" id="settings"></div>
   <div class="overlay" id="help"></div>
@@ -404,7 +430,8 @@ function syncArrays(){
   const EST = ROUNDS.find(r=>r.type==='estimate');
   const nEst = EST ? (EST.maxQuestions||3) : 0;
   const oldQ = Array.isArray(S.estQs) ? S.estQs : [];
-  S.estQs = Array.from({length:nEst}, (_,i)=>Object.assign({id:'q'+(i+1), text:'', unit:'', answer:''}, oldQ[i]||{}, {id:'q'+(i+1)}));
+  const defs = EST ? (EST.questions||[]) : [];
+  S.estQs = Array.from({length:nEst}, (_,i)=>{ const o = oldQ[i]||{}, d = defs[i]||{}; return {id:'q'+(i+1), text: o.text || d.text || '', unit: o.unit || d.unit || '', answer: o.answer || '', explain: o.explain || d.explain || ''}; });
   if(FIN){ S.finaleQs = (S.finaleQs||[]).filter(id=>FIN.questions.some(q=>q.id===id)); if(!S.finaleQs.length) S.finaleQs = [FIN.questions[0].id]; }
 }
 let S = defaults();
@@ -458,7 +485,7 @@ function estList(ri, q){
   const key = 'est-'+q.id;
   const r = ROUNDS[ri];
   const howTo = q.unit ? [`Type one number, in ${q.unit}, in the Teams chat. Don't send yet.`].concat((r.howTo||[]).slice(1)) : r.howTo;
-  const L = Object.assign({}, r, {ri, key, est:q.id, topic:q.text, unit:q.unit, howTo, answer: parseNumber(q.answer)});
+  const L = Object.assign({}, r, {ri, key, est:q.id, topic:q.text, unit:q.unit, howTo, explain: q.explain||'', answer: parseNumber(q.answer)});
   LCACHE[key] = L;
   return L;
 }
@@ -482,7 +509,7 @@ function buildSteps(){
   activeRounds().forEach(ri=>{
     const ls = activeLists(ri);
     steps.push({kind:'intro', r:ri});
-    ls.forEach((L,k)=>['question','timer','board','paste'].forEach(kind=>steps.push({kind, r:ri, L, qn:k+1, qt:ls.length})));
+    ls.forEach((L,k)=>(L.type==='estimate' ? ['question','timer','paste','board'] : ['question','timer','board','paste']).forEach(kind=>steps.push({kind, r:ri, L, qn:k+1, qt:ls.length})));
     steps.push({kind:'scores', r:ri});
   });
   steps.push({kind:'winner'});
@@ -678,7 +705,7 @@ function scoreEstimate(L, answers){
     if(truth==null) return Object.assign({}, x.a, {chips:[{c:'warn',t:'No answer set: press I'}], pts:0});
     if(x.g==null) return Object.assign({}, x.a, {chips:[{c:'warn',t:'No number found'}], pts:0});
     const pts = PTS.estimate[x.rank-1] || 0;
-    return Object.assign({}, x.a, {pts, chips:[
+    return Object.assign({}, x.a, {pts, g:x.g, d:x.d, rank:x.rank, chips:[
       {c:'', t:'Guess '+fmtNum(x.g)},
       {c: x.d===0?'ok':'', t: x.d===0 ? 'Spot on!' : 'off by '+fmtNum(Math.round(x.d*100)/100)},
       {c: pts>0?'ok':'', t: ordinal(x.rank)+' closest'+(pts>0?' +'+pts:'')}
@@ -823,6 +850,7 @@ function dial(cls, inner, deg, dbl){
 function render(){
   const st = steps[S.step];
   $('#extra').classList.remove('show');
+  $('#explainBox').classList.remove('show');
   $('.helpnote').style.display = st.kind==='title' ? '' : 'none';
   screen.className = 'screen screen-'+st.kind;
   if(st.kind==='title') screen.innerHTML = renderTitle();
@@ -914,7 +942,7 @@ function renderTimer(st){
 function revealSeq(L){
   if(L.type==='sort') return [1,2,3,4,5];   // sort lists: first place first
   if(L.type==='finale') return finaleRanking(L.fq).map((x,k)=>k).reverse();
-  if(L.type==='estimate') return [1];
+  if(L.type==='estimate') return [1,2];
   const seq = L.items.map(x=>x.rank).sort((a,b)=>b-a);
   if(L.bomb) seq.push('bomb');
   if(L.extra) seq.push('extra');
@@ -930,7 +958,7 @@ function labelHTML(L, it){
 }
 function renderBoard(L){
   const yr = L.year && !String(L.source||'').includes(L.year) ? ` (${esc(L.year)})` : '';
-  const foot = `<div class="board-foot"><span><b>Source:</b> ${esc(L.source||'')}${yr}</span><span>${esc(L.dataDate||'')}</span></div>`;
+  const foot = `<div class="board-foot"><span><b>Source:</b> ${esc(L.source||'')}${yr}</span><span>${esc([L.dataDate, L.explain?'X: explanation':''].filter(Boolean).join('  ·  '))}</span></div>`;
   if(L.type==='sort') return renderSortBoard(L) + foot;
   if(L.type==='finale') return renderFinaleBoard(L) + foot;
   if(L.type==='estimate') return renderEstimateBoard(L) + foot;
@@ -957,7 +985,14 @@ function renderEstimateBoard(L){
   const back = has
     ? `<div class="ans"><div class="ans-num">${fmtNum(L.answer)}</div>${L.unit?`<div class="ans-unit">${esc(L.unit)}</div>`:''}</div>`
     : `<div class="ans"><div class="ans-unit">No answer set yet. Press I, Team stats.</div></div>`;
-  return `<div class="board-head">${esc(L.topic)}</div>${tileHTML(1, '<span class="q">?</span>', back, 'answer')}<p class="est-note">Closest guess wins. Points: ${esc(pts)}.</p>`;
+  const ranked = has ? scoreRound(L).rows.filter(x=>x.rank).sort((a,b)=>a.rank-b.rank) : [];
+  const list = ranked.length
+    ? ranked.map((x,k)=>`<div class="rk-row ${x.rank===1?'win':''}" style="--i:${ranked.length-1-k}"><span class="rk-pl">${x.rank===1?'👑':esc(ordinal(x.rank))}</span><span class="rk-nm">${esc(x.name)}</span><span class="rk-g">${fmtNum(x.g)}</span><span class="rk-d">${x.d===0?'spot on!':'off by '+fmtNum(Math.round(x.d*100)/100)}</span><span class="rk-p ${x.pts>0?'':'zero'}">${x.pts>0?'+'+x.pts:'0'}</span></div>`).join('')
+    : `<p class="rk-empty">No guesses yet. Press ← to go back to the paste screen.</p>`;
+  return `<div class="board-head">${esc(L.topic)}</div>
+    <div class="estwrap">${tileHTML(1, '<span class="q">?</span>', back, 'answer')}
+      <div class="rank-list" data-key="2"><p class="rk-wait">Who was closest?</p>${list}</div></div>
+    <p class="est-note">Closest guess wins. Points: ${esc(pts)}.</p>`;
 }
 function renderFinaleBoard(L){
   const q = finaleQ(L.fq); const list = finaleRanking(L.fq);
@@ -981,16 +1016,26 @@ function applyReveal(animate){
       else ex.classList.remove('show');
       return;
     }
-    const el = screen.querySelector(`.tile[data-key="${key}"]`);
+    const el = screen.querySelector(`[data-key="${key}"]`);
     if(!el) return;
     const wasOpen = el.classList.contains('open');
-    if(!animate) el.querySelector('.in').style.transition='none';
+    const inner = el.querySelector('.in');
+    if(!animate && inner) inner.style.transition='none';
+    if(!animate && !inner) el.classList.add('instant');
     el.classList.toggle('open', on);
-    if(!animate){ el.offsetHeight; el.querySelector('.in').style.transition=''; }
+    if(!animate){ el.offsetHeight; if(inner) inner.style.transition=''; else setTimeout(()=>el.classList.remove('instant'), 50); }
     if(animate && on && !wasOpen && key==='bomb') explode(el);
   });
 }
 const maxRevealAt = k => revealSeq(steps[k].L).length;
+function toggleExplain(){
+  const box = $('#explainBox');
+  if(box.classList.contains('show')){ box.classList.remove('show'); return; }
+  const st = steps[S.step];
+  if(st.kind!=='board' || !st.L || !st.L.explain) return;
+  box.innerHTML = `<div class="card explain-card"><h3>Explanation</h3><p>${esc(st.L.explain)}</p><span class="explain-hint">Press X to close</span></div>`;
+  box.classList.add('show');
+}
 
 function explode(el){
   if(reduced) return;
@@ -1020,9 +1065,9 @@ function renderPaste(st){
     <div><h2>Paste the chat</h2>
       <p class="hint">In Teams, select the answers, press Ctrl+C, click here and press Ctrl+V. Typos are fine.</p>
       <textarea id="pasteBox" spellcheck="false" aria-label="Pasted chat messages" placeholder="${esc(ex)}: …&#10;…&#10;&#10;or, with names and times:&#10;[13:05] ${esc(ex)}&#10;…">${esc(P.raw)}</textarea>
-      <div class="paste-btns"><button class="btn" id="applyBtn" type="button">Add the points</button><button class="btn ghost" id="clearBtn" type="button">Clear</button><span class="hint" style="margin:0">or Ctrl+Enter</span></div>
+      <div class="paste-btns"><button class="btn" id="applyBtn" type="button">${st.L.type==='estimate'?'Reveal the answer':'Add the points'}</button><button class="btn ghost" id="clearBtn" type="button">Clear</button><span class="hint" style="margin:0">or Ctrl+Enter</span></div>
     </div>
-    <div><h2>Points for this list</h2><p class="hint" id="pasteSummary"></p><div class="res" id="pasteRes"></div><div id="pasteOpen"></div></div>
+    <div><h2>${st.L.type==='estimate'?'The guesses':'Points for this list'}</h2><p class="hint" id="pasteSummary"></p><div class="res" id="pasteRes"></div><div id="pasteOpen"></div></div>
   </div>`;
 }
 function wirePaste(L){
@@ -1039,8 +1084,9 @@ function wirePaste(L){
 function drawPaste(L){
   const {rows, open} = scoreRound(L);
   const found = rows.filter(x=>x.text.trim()).length;
+  const hide = L.type==='estimate';
   $('#pasteSummary').textContent = NP()
-    ? `${found} of ${NP()} players have an answer.${found<NP() ? ' Type a missing answer in their row, or assign a line below.' : ''}`
+    ? `${found} of ${NP()} players have ${hide?'a guess':'an answer'}.${found<NP() ? ' Type a missing answer in their row, or assign a line below.' : ''}${hide?' The answer and who was closest come on the next screen.':''}`
     : 'Add players first: press 0, then → to reach “Who\'s playing?”.';
   const rh = Math.min(66, Math.floor(620/Math.max(NP(),1))-10);
   $('#pasteRes').style.setProperty('--rh', rh+'px');
@@ -1048,8 +1094,8 @@ function drawPaste(L){
     <div class="res-row">
       <div class="nm" title="${esc(x.name)}">${esc(x.name)}</div>
       <input data-p="${x.p}" class="${x.edited?'edited':''}" value="${esc(x.text)}" placeholder="No answer" spellcheck="false" aria-label="Answer of ${esc(x.name)}">
-      <div class="chips">${x.edited?`<button class="cp cp-warn" type="button" data-undo="${x.p}" title="Use the pasted answer again">↺ edited</button>`:''}${x.chips.map(c=>`<span class="cp ${c.c?'cp-'+c.c:''}">${esc(c.t)}</span>`).join('')}</div>
-      <div class="pt ${x.pts===0?'zero':(x.pts<0?'neg':'')}">${x.pts>0?'+':''}${x.pts}</div>
+      <div class="chips">${x.edited?`<button class="cp cp-warn" type="button" data-undo="${x.p}" title="Use the pasted answer again">↺ edited</button>`:''}${(hide ? x.chips.filter(c=>c.c==='warn' || /^(Guess|No answer)/.test(c.t)) : x.chips).map(c=>`<span class="cp ${c.c?'cp-'+c.c:''}">${esc(c.t)}</span>`).join('')}</div>
+      ${hide ? '<div class="pt zero">?</div>' : `<div class="pt ${x.pts===0?'zero':(x.pts<0?'neg':'')}">${x.pts>0?'+':''}${x.pts}</div>`}
     </div>`).join('');
   $('#pasteOpen').innerHTML = open.length ? `<div class="unas"><h3>Who sent these?</h3>${open.map(o=>`
       <div><span title="${esc(o.text)}">${esc(o.text)}</span><select data-key="${esc(o.key)}" aria-label="Who sent: ${esc(o.text)}"><option value="">Assign to…</option>${S.players.map(n=>`<option>${esc(n)}</option>`).join('')}</select></div>`).join('')}</div>` : '';
@@ -1326,7 +1372,8 @@ function helpHTML(){
     ['C','3, 2, 1, send! (any time)'],['S','Scoreboard'],
     ['Ctrl+Enter','Paste screen: add the points'],['I','Settings: lists, finale, answers'],
     ['1 – 9','Jump to a round'],['0','Back to the title'],
-    ['F','Full screen'],['Esc','Close, or leave a text field'],
+    ['X','Board: show or hide the explanation'],['F','Full screen'],
+    ['Esc','Close, or leave a text field'],
   ];
   return `<div class="panel"><button class="btn close" type="button" data-close>Close (Esc)</button><h2>Shortcuts</h2>
   <p class="sub">After each board: paste the chat, check the points, Ctrl+Enter. After the last list of a round comes the scoreboard; Space shows the score readings.</p>
@@ -1422,6 +1469,7 @@ function go(i, revealed){
 }
 function next(){
   const st=steps[S.step];
+  if($('#explainBox').classList.contains('show')){ $('#explainBox').classList.remove('show'); return; }
   if(st.kind==='board' && S.revealed < maxRevealAt(S.step)){ S.revealed++; save(); applyReveal(true); return; }
   if(st.kind==='paste'){ applyList(st.L); return; }
   if(st.kind==='scores' && S.revealed===0){ S.revealed=1; save(); render(); return; }
@@ -1466,6 +1514,7 @@ document.addEventListener('keydown',e=>{
   if(k==='t'){ e.preventDefault(); toggleTimer(); return; }
   if(k==='r'){ e.preventDefault(); resetTimer(); return; }
   if(k==='c'){ e.preventDefault(); countdown(); return; }
+  if(k==='x'){ e.preventDefault(); toggleExplain(); return; }
   if(k==='0'){ go(0); return; }
   if(/^[1-9]$/.test(k) && +k<=rtot()){ jumpRound(+k); return; }
 });

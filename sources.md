@@ -1,6 +1,7 @@
 # Sources
 
-All lists were checked on **13–14 November 2026**, directly on the source. Nothing is made up.
+All lists were checked on **13–19 November 2026**, directly on the source. Nothing is made up.
+Every list has a short explanation in `data.js` (`explain`); press **X** on the board to show it.
 Where a list changes over time, the date is shown on the board.
 
 **Scoring:** an answer in the top 10 = 1 point, the answer at place 1 = 3 points, the bomb (place 11) = −1. Sort lists: 1 point per item in the right place. Team stats: closest guess 5 points, then 4, 3, 2, 1 (same distance = same points). Change it in `data.js` under `points`.
@@ -15,54 +16,53 @@ Where a list changes over time, the date is shown on the board.
 
 ## Round 1: Diabetes around the world (with medtech as list 4)
 
-The IDF publishes counts per country. I calculated the percentages from two IDF tables of the same edition, and only included countries with **at least 1 million people in that age group** (this keeps out tiny islands whose figures are heavily rounded, such as Niue: 300 out of 1,200 adults).
+The IDF publishes counts per country. For lists 1 and 2 I calculated the percentages from two IDF tables of the same edition, for **European countries only**: the UN definition of Europe (Eastern, Northern, Southern and Western Europe, UN M49), without micro-states (at least 100,000 people in that age group; this leaves out Andorra, Monaco, San Marino, Liechtenstein, the Faroe Islands, the Isle of Man, Guernsey and Jersey).
 
-### List 1: Highest share of adults with diabetes
+### List 1: Highest share of adults with diabetes in Europe
 
 - **Source:** IDF Diabetes Atlas, 11th edition, 2024 estimates: *People with diabetes (20–79 y)* https://diabetesatlas.org/data-by-indicator/diabetes-estimates-20-79-y/people-with-diabetes-in-1000s/ ÷ *Total adult population (20–79 y)* https://diabetesatlas.org/data-by-indicator/demographics/total-adult-population-20-79-y-in-1000s/
-- **Check:** global 588.7 million ÷ 5,301.7 million = 11.1%, the IDF's headline "1 in 9".
-- **Confidence:** High for the numbers. This is the crude share (not age-adjusted), so countries with many older people come out a bit higher than in the IDF's own comparison.
+- **Confidence:** High for the numbers. This is the crude share (not age-adjusted), so countries with many older people come out a bit higher than in the IDF's own comparison. 39 countries.
 
 | Place | Country | Adults with diabetes | Adults (20–79) | Share |
 |---|---|---|---|---|
-| 1 | Kuwait | 908,500 | 3,203,000 | 28.36% |
-| 2 | Pakistan | 34,532,400 | 130,417,400 | 26.48% |
-| 3 | Saudi Arabia | 5,344,600 | 24,983,100 | 21.39% |
-| 4 | Malaysia | 4,753,900 | 23,936,500 | 19.86% |
-| 5 | Egypt | 13,214,500 | 66,602,500 | 19.84% |
-| 6 | Qatar | 409,300 | 2,193,100 | 18.66% |
-| 7 | Bahrain | 197,600 | 1,107,100 | 17.85% |
-| 8 | Algeria | 4,761,800 | 28,219,300 | 16.87% |
-| 9 | Tunisia | 1,392,900 | 8,391,400 | 16.60% |
-| 10 | Dominican Republic | 1,203,700 | 7,255,500 | 16.59% |
-| **11 (bomb)** | **United Arab Emirates** | 1,274,200 | 7,710,700 | 16.53% |
-| 12 | Türkiye | 9,603,100 | 58,964,300 | 16.29% |
-| 17 | United States | | | 15.70% |
-| 53 | Lithuania | | | 10.63% |
-| 91 | Belgium | | | 7.56% |
-| 101 | Netherlands | | | 6.85% |
+| 1 | Portugal | 1,094,800 | 7,683,900 | 14.25% |
+| 2 | Croatia | 409,800 | 3,000,100 | 13.66% |
+| 3 | Serbia | 718,500 | 5,407,100 | 13.29% |
+| 4 | Spain | 4,660,200 | 35,645,700 | 13.07% |
+| 5 | Bosnia and Herzegovina | 316,400 | 2,445,600 | 12.94% |
+| 6 | Montenegro | 57,800 | 454,100 | 12.73% |
+| 7 | Albania | 261,400 | 2,103,300 | 12.43% |
+| 8 | Malta | 48,000 | 417,000 | 11.51% |
+| 9 | Greece | 873,800 | 7,659,600 | 11.41% |
+| 10 | Italy | 5,018,400 | 44,145,300 | 11.37% |
+| **11 (bomb)** | **Lithuania** | 210,600 | 1,980,500 | 10.63% |
+| 12 | Germany | 6,485,300 | 61,438,100 | 10.56% |
+| 13 | Poland | | | 10.17% |
+| 29 | Belgium | | | 7.56% |
+| 33 | Netherlands | | | 6.85% |
 
-### List 2: Where type 1 is most common in children and teens
+### List 2: Where in Europe type 1 is most common in children and teens
 
 - **Source:** IDF Diabetes Atlas, 11th edition, 2024 estimates: *People with type 1 diabetes (0–19 y)* https://diabetesatlas.org/data-by-indicator/type-1-diabetes-estimates/people-with-type-1-diabetes-0-19-y/ ÷ *Population of children and adolescents (0–19 y)* https://diabetesatlas.org/data-by-indicator/demographics/population-of-children-and-adolescents-0-19-y/
-- **Confidence:** High for the numbers. Lithuania is left out by the 1-million rule (fewer than 1 million people aged 0–19).
+- **Confidence:** High for the numbers. Note that places 6 to 8 (Ireland, Denmark, Slovakia) and places 10 and 11 (Belarus, Germany) are very close; the order follows the exact figures. 37 countries.
 
-| Place | Country | Share of 0–19 with type 1 | 1 in … |
-|---|---|---|---|
-| 1 | Finland | 0.672% | 149 |
-| 2 | Saudi Arabia | 0.442% | 226 |
-| 3 | United Arab Emirates | 0.436% | 229 |
-| 4 | Oman | 0.409% | 245 |
-| 5 | Sweden | 0.384% | 260 |
-| 6 | Kuwait | 0.347% | 288 |
-| 7 | Norway | 0.344% | 291 |
-| 8 | Canada | 0.338% | 296 |
-| 9 | Libya | 0.336% | 298 |
-| 10 | Tunisia | 0.331% | 302 |
-| **11 (bomb)** | **Morocco** | 0.328% | 305 |
-| 12 | Algeria | 0.315% | 318 |
-| 31 | Belgium | 0.185% | about 540 |
-| 32 | Netherlands | 0.184% | about 540 |
+| Place | Country | Type 1 (0–19) | Population 0–19 | Share | 1 in … |
+|---|---|---|---|---|---|
+| 1 | Finland | 7,654 | 1,138,769 | 0.6722% | 149 |
+| 2 | Sweden | 9,302 | 2,422,029 | 0.3840% | 260 |
+| 3 | Norway | 4,262 | 1,240,389 | 0.3436% | 291 |
+| 4 | Estonia | 941 | 289,094 | 0.3254% | 307 |
+| 5 | Latvia | 1,271 | 391,106 | 0.3249% | 308 |
+| 6 | Ireland | 3,791 | 1,332,152 | 0.2845% | 351 |
+| 7 | Denmark | 3,665 | 1,288,686 | 0.2844% | 352 |
+| 8 | Slovakia | 3,264 | 1,147,978 | 0.2843% | 352 |
+| 9 | Ukraine | 20,311 | 7,311,836 | 0.2778% | 360 |
+| 10 | Belarus | 5,223 | 1,962,244 | 0.2662% | 376 |
+| **11 (bomb)** | **Germany** | 41,564 | 15,623,773 | 0.2660% | 376 |
+| 12 | United Kingdom | 42,017 | 15,986,875 | 0.2628% | 380 |
+| 16 | Lithuania | | | 0.2344% | 427 |
+| 25 | Belgium | | | 0.1848% | 541 |
+| 26 | Netherlands | | | 0.1842% | 543 |
 
 ### List 3: Highest diabetes spending per person
 
@@ -148,6 +148,6 @@ The IDF publishes counts per country. I calculated the percentages from two IDF 
 
 ## Round 4: Team stats (estimate)
 
-- **Source:** your own team numbers. You type the questions and the real answers in the game (press **I**, "Team stats", up to 3 questions).
-- **Privacy:** these numbers are not in any file of the quiz. They are saved only in the browser where you type them, so they never end up on GitHub or in the online version for others.
-- **Scoring:** players type one number; the closest gets 5 points, then 4, 3, 2 and 1. Players at the same distance get the same points.
+- **Questions** (in `data.js`): calls by the Dutch team on the busiest day of the year; calls by the Dutch team this year; WSS handled by the Dutch team this year.
+- **Real answers:** your own team numbers. They are **not** in any file of the quiz, because the GitHub version is public. Type them in the game (press **I**, "Team stats"); they are saved only in the browser where you type them.
+- **How it plays:** players type one number; you paste the guesses first (the paste screen shows only the guesses), then the board reveals the real answer and the ranking. Closest gets 5 points, then 4, 3, 2 and 1; the same distance gets the same points.
